@@ -21,7 +21,7 @@ Each item is owned by a user, who can add/edit/delete those items/categories
 - models.py
 - readme.md
 - client_secrets.json
-- fb_client_secrete.json
+- fb_client_secrets.json
 - static/
 - templates/
 
