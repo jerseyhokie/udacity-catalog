@@ -2,7 +2,7 @@ from models import Base, Categories, CategoryItems, User
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from flask import session as login_session
 from flask import make_response
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -311,10 +311,11 @@ def newCategory():
 @app.route('/catalog/')
 def showCategories():
     categories = session.query(Categories).order_by(asc(Categories.name))
+    recentCategoriesItems = session.query(CategoryItems).order_by(desc(CategoryItems.id)).limit(5)
     if 'username' not in login_session:
-        return render_template('publicCategories.html', categories=categories)
+        return render_template('publicCategories.html', categories=categories, recent=recentCategoriesItems)
     else:
-        return render_template('categories.html', categories=categories)
+        return render_template('categories.html', categories=categories, recent=recentCategoriesItems)
 
 # UPDATE - Edit a Category
 # Function available with both category ID and Category Name
@@ -459,6 +460,29 @@ def showCategoryByName(categories_name):
         items=items, categories_name=categories_name, creator=creator)
     return render_template('showCategory.html', categories=categories,
         items=items, categories_name=categories_name, creator=creator)
+
+# READ - Display all details of a Category Item
+# Function available with both Category Item ID and Category Item Name
+
+@app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/')
+def showCategoryItem(categoriesItems_id):
+   item = session.query(CategoriesItems).filter_by(id=categoriesItems_id).one()
+   creator = getUserInfo(categoriesItems.user_id)
+   if 'username' not in login_session or creator.id != login_session['user_id']:
+       return render_template('showPublicCategoryItem.html', item=item,
+       categoriesItems_id=categoriesItems_id, creator=creator)
+   return render_template('showCategoryItem.html', item=item,
+       categoriesItems_id=categoriesItems_id, creator=creator)
+
+@app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/')
+def showCategoryItemByName(categoriesItems_name):
+    item = session.query(CategoriesItems).filter_by(name=categoriesItems_name).one()
+    creator = getUserInfo(categories.user_id)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('showPublicCategoryItem.html', item=item,
+        categoriesItems_name=categoriesItems_name, creator=creator)
+    return render_template('showCategoryItem.html', item=item,
+        categoriesItems_name=categoriesItems_name, creator=creator)
 
 
 # UPDATE - Edit a category Item
