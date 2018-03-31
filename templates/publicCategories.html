@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<h1>Catalog App</h1>
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+
+
+{% for i in categories %}
+	<a href = "{{url_for('showCategoryByName', categories_name = i.name)}}">
+		<div class="row">
+			<div class="col-md-1"></div>
+				<div class="col-md-10 restaurant-list">
+					<h3>{{i.name}}</h3>
+				</div>
+			<div class="col-md-1"></div>
+		</div>
+	</a>
+{% endfor %}
+
+
+
+
+
+{% endblock %}

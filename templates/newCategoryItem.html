@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<h1>New Category Item</h1>
+
+<div class = 'pane'>
+<form action="{{ url_for('newCategoryItemByName', categories_name = categories_name)}}" method = 'post'>
+
+<dl>
+	<dt>Name:</dt>
+		<dd><input type ='text' size='30' name='name'></dd>
+	<dt>Description:</dt>
+	    <dd><input type ='text' size='250' name='description'></dd>
+</dl>
+
+<input type='submit' value='Create'>
+
+</form>
+</div>
+
+{% endblock %}

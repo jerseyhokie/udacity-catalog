@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+	<body>
+	<div class = 'pane'>
+		<div class = 'header'>
+		<h1>{{ itemToDelete.name }} will be deleted </h1>
+	</div>
+
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+<div class = 'pane'>
+<form action="{{ url_for('deleteCategoryItemByName', categories_name = categories_name, categoriesItems_name = itemToDelete.name)}}" method = 'post'>
+
+<p>Are you sure you want to delete {{ itemToDelete.name }}? </p>
+
+<input type='submit' value='Delete'>
+
+{% endblock %}

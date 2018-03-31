@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+	<body>
+	<div class = 'pane'>
+		<div class = 'header'>
+		<h1>{{ categories.name }}</h1>
+	</div>
+
+	<a href = '{{url_for('newCategoryItemByName', categories_name = categories.name) }}'>Create New Category Item</a>
+
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+
+		{% for i in items %}
+
+    <div class = 'nameAndPrice'>
+		<span class = 'name'><p>{{i.name}}</p></span>
+
+		<span class = 'description'><p>{{i.description}} </p></span>
+	</div>
+
+		{% endfor %}
+
+
+{% endblock %}
