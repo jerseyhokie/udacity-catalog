@@ -25,6 +25,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
@@ -34,8 +35,8 @@ def showLogin():
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
 
-# Setup Facebook Login
 
+# Setup Facebook Login
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -113,16 +114,13 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
 
 
-
-
 # Create Google Login
-
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -216,7 +214,6 @@ def gconnect():
     return output
 
 
-
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -261,8 +258,8 @@ def getUserID(email):
     except:
         return None
 
-# Disconnect based on provider
 
+# Disconnect based on provider
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
@@ -285,7 +282,6 @@ def disconnect():
         return redirect(url_for('showCategories'))
 
 
-
 # Catalog Web Interface
 #    Establishes all the CRUD operations via webpages
 #    Each method is listed in CRUD order, categories then categoryItems respectively
@@ -293,12 +289,12 @@ def disconnect():
 #    All methods are availabel using ID or Name of item as key
 
 # CREATE - Add a new Category to the Catalog
-@app.route('/catalog/new', methods=['GET','POST'])
+@app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-        newItem = Categories(name=request.form['name'], user_id=login_session['user_id'] )
+        newItem = Categories(name=request.form['name'], user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash("New Category created!")
@@ -306,21 +302,22 @@ def newCategory():
     else:
         return render_template('newCategory.html')
 
+
 # READ - Root of the web app - Defaults to show all categories
 @app.route('/')
 @app.route('/catalog/')
 def showCategories():
     categories = session.query(Categories).order_by(asc(Categories.name))
-    recentCategoriesItems = session.query(CategoryItems).order_by(desc(CategoryItems.id)).limit(5)
+    recentCategoriesItems = session.query(CategoryItems).join(Categories).order_by(desc(CategoryItems.id)).limit(5)
     if 'username' not in login_session:
         return render_template('publicCategories.html', categories=categories, recent=recentCategoriesItems)
     else:
         return render_template('categories.html', categories=categories, recent=recentCategoriesItems)
 
+
 # UPDATE - Edit a Category
 # Function available with both category ID and Category Name
-
-@app.route('/catalog/<int:categories_id>/edit', methods=['GET','POST'])
+@app.route('/catalog/<int:categories_id>/edit', methods=['GET', 'POST'])
 def editCategory(categories_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -336,7 +333,8 @@ def editCategory(categories_id):
     else:
         return render_template('editCategory.html', categories_id=categories_id, item=editedItem)
 
-@app.route('/catalog/<string:categories_name>/edit', methods=['GET','POST'])
+
+@app.route('/catalog/<string:categories_name>/edit', methods=['GET', 'POST'])
 def editCategoryByName(categories_name):
     if 'username' not in login_session:
         return redirect('/login')
@@ -357,8 +355,7 @@ def editCategoryByName(categories_name):
 
 # DELETE - Remove a Category
 # Function available with both category ID and Category Name
-
-@app.route('/catalog/<int:categories_id>/delete', methods=['GET','POST'])
+@app.route('/catalog/<int:categories_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(categories_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -380,7 +377,8 @@ def deleteCategory(categories_id):
         return render_template('deleteCategory.html', itemToDelete=categoryToDelete, items=itemsToDelete,
          categories_id=categories_id)
 
-@app.route('/catalog/<string:categories_name>/delete', methods=['GET','POST'])
+
+@app.route('/catalog/<string:categories_name>/delete', methods=['GET', 'POST'])
 def deleteCategoryByName(categories_name):
     if 'username' not in login_session:
         return redirect('/login')
@@ -402,9 +400,10 @@ def deleteCategoryByName(categories_name):
         return render_template('deleteCategory.html', itemToDelete=categoryToDelete, items=itemsToDelete,
          categories_name=categories_name)
 
+
 # CREATE - Add a new Category Item to a specific Category
 # Function available with both category ID and Category Name
-@app.route('/catalog/<int:categories_id>/new', methods=['GET','POST'])
+@app.route('/catalog/<int:categories_id>/new', methods=['GET', 'POST'])
 def newCategoryItem(categories_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -418,7 +417,8 @@ def newCategoryItem(categories_id):
     else:
         return render_template('newCategoryItem.html', categories_id=categories_id)
 
-@app.route('/catalog/<string:categories_name>/new', methods=['GET','POST'])
+
+@app.route('/catalog/<string:categories_name>/new', methods=['GET', 'POST'])
 def newCategoryItemByName(categories_name):
     if 'username' not in login_session:
         return redirect('/login')
@@ -435,20 +435,19 @@ def newCategoryItemByName(categories_name):
         return render_template('newCategoryItem.html', categories_name=categories_name)
 
 
-
 # READ - Display all of the items in a single Category
 # Function available with both category ID and Category Name
-
 @app.route('/catalog/<int:categories_id>/')
 def showCategory(categories_id):
-   categories = session.query(Categories).filter_by(id=categories_id).one()
-   creator = getUserInfo(categories.user_id)
-   items = session.query(CategoryItems).filter_by(categories_id=categories_id)
-   if 'username' not in login_session or creator.id != login_session['user_id']:
-       return render_template('showPublicCategory.html', categories=categories,
-       items=items, categories_id=categories_id, creator=creator)
-   return render_template('showCategory.html', categories=categories,
-       items=items, categories_id=categories_id, creator=creator)
+    categories = session.query(Categories).filter_by(id=categories_id).one()
+    creator = getUserInfo(categories.user_id)
+    items = session.query(CategoryItems).filter_by(categories_id=categories_id)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('showPublicCategory.html', categories=categories,
+        items=items, categories_id=categories_id, creator=creator)
+    return render_template('showCategory.html', categories=categories,
+        items=items, categories_id=categories_id, creator=creator)
+
 
 @app.route('/catalog/<string:categories_name>/')
 def showCategoryByName(categories_name):
@@ -461,34 +460,34 @@ def showCategoryByName(categories_name):
     return render_template('showCategory.html', categories=categories,
         items=items, categories_name=categories_name, creator=creator)
 
+
 # READ - Display all details of a Category Item
 # Function available with both Category Item ID and Category Item Name
-
 @app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/')
-def showCategoryItem(categoriesItems_id):
-   item = session.query(CategoriesItems).filter_by(id=categoriesItems_id).one()
-   creator = getUserInfo(categoriesItems.user_id)
-   if 'username' not in login_session or creator.id != login_session['user_id']:
-       return render_template('showPublicCategoryItem.html', item=item,
-       categoriesItems_id=categoriesItems_id, creator=creator)
-   return render_template('showCategoryItem.html', item=item,
-       categoriesItems_id=categoriesItems_id, creator=creator)
+def showCategoryItem(categories_id, categoriesItems_id):
+    item = session.query(CategoryItems).filter_by(id=categoriesItems_id).one()
+    creator = getUserInfo(item.user_id)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('showPublicCategoryItem.html', item=item, categories_id=categories_id,
+        categoriesItems_id=categoriesItems_id, creator=creator)
+    return render_template('showCategoryItem.html', item=item, categories_id=categories_id,
+        categoriesItems_id=categoriesItems_id, creator=creator)
+
 
 @app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/')
-def showCategoryItemByName(categoriesItems_name):
-    item = session.query(CategoriesItems).filter_by(name=categoriesItems_name).one()
-    creator = getUserInfo(categories.user_id)
+def showCategoryItemByName(categories_name, categoriesItems_name):
+    item = session.query(CategoryItems).filter_by(name=categoriesItems_name).one()
+    creator = getUserInfo(item.user_id)
     if 'username' not in login_session or creator.id != login_session['user_id']:
-        return render_template('showPublicCategoryItem.html', item=item,
+        return render_template('showPublicCategoryItem.html', item=item, categories_name=categories_name,
         categoriesItems_name=categoriesItems_name, creator=creator)
-    return render_template('showCategoryItem.html', item=item,
+    return render_template('showCategoryItem.html', item=item, categories_name=categories_name,
         categoriesItems_name=categoriesItems_name, creator=creator)
 
 
 # UPDATE - Edit a category Item
 # Function available with both category ID and Category Name
-
-@app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/edit', methods=['GET','POST'])
+@app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/edit', methods=['GET', 'POST'])
 def editCategoryItem(categories_id, categoriesItems_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -509,7 +508,7 @@ def editCategoryItem(categories_id, categoriesItems_id):
             item=editedItem)
 
 
-@app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/edit', methods=['GET','POST'])
+@app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/edit', methods=['GET', 'POST'])
 def editCategoryItemByName(categories_name, categoriesItems_name):
     if 'username' not in login_session:
         return redirect('/login')
@@ -529,10 +528,10 @@ def editCategoryItemByName(categories_name, categoriesItems_name):
             'editCategoryItem.html', categories_name=categories_name, categoriesItems_name=categoriesItems_name,
             item=editedItem)
 
+
 # DELETE - Remove a category Item
 # Function available with both category ID and Category Name
-
-@app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/delete', methods=['GET','POST'])
+@app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/delete', methods=['GET', 'POST'])
 def deleteCategoryItem(categories_id, categoriesItems_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -547,7 +546,8 @@ def deleteCategoryItem(categories_id, categoriesItems_id):
         return render_template('deleteCategoryItem.html', categories_id=categories_id,
             categoriesItems_id=categoriesItems_id,  itemToDelete=itemToDelete)
 
-@app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/delete', methods=['GET','POST'])
+
+@app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/delete', methods=['GET', 'POST'])
 def deleteCategoryItemByName(categories_name, categoriesItems_name):
     if 'username' not in login_session:
         return redirect('/login')
@@ -563,6 +563,7 @@ def deleteCategoryItemByName(categories_name, categoriesItems_name):
     else:
         return render_template('deleteCategoryItem.html', categories_name=categories_name,
             categoriesItems_name=categoriesItems_name,  itemToDelete=itemToDelete)
+
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

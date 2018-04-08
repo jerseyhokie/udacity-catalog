@@ -18,7 +18,10 @@
 
 </div>
 
+	<a href = '{{url_for('newCategory') }}'>Create New Category Item</a>
 
+
+<h2> Categories </h2>
 
 {% for i in categories %}
 	<a href = "{{url_for('showCategoryByName', categories_name = i.name)}}">
@@ -30,6 +33,21 @@
 			<div class="col-md-1"></div>
 		</div>
 	</a>
+{% endfor %}
+
+<h2> Recently Added Items </h2>
+
+{% for p in recent %}
+
+	<a href = "{{url_for('showCategoryItemByName', categories_name = p.categories.name, categoriesItems_name = p.name)}}">
+			<div class="row">
+			<div class="col-md-1"></div>
+				<div class="col-md-10 restaurant-list">
+					<h3>{{p.name}}</h3>
+				</div>
+			<div class="col-md-1"></div>
+		</div>
+    </a>
 {% endfor %}
 
 

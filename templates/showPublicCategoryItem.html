@@ -5,10 +5,12 @@
 	<body>
 	<div class = 'pane'>
 		<div class = 'header'>
-		<h1>{{ categories.name }}</h1>
+		<h1>{{ item.name }}</h1>
+		<figure class="creator">
+			<img src={{creator.picture}}>
+			<figcaption>{{creator.name}}</figcaption>
+		</figure>
 	</div>
-
-	<a href = '{{url_for('newCategoryItemByName', categories_name = categories.name) }}'>Create New Category Item</a>
 
 
 <div class = 'flash'>
@@ -26,17 +28,14 @@
 </div>
 
 
-		{% for i in items %}
-
-	<a href = "{{url_for('showCategoryItemByName', categories_name = i.categories.name, categoriesItems_name = i.name)}}">
-
     <div class = 'nameAndPrice'>
-		<span class = 'name'><p>{{i.name}}</p></span>
-
-		<span class = 'description'><p>{{i.description}} </p></span>
+		<span class = 'name'><p>{{item.name}}</p></span>
+		<span class = 'description'><p>{{item.description}} </p></span>
+		<span class = 'creator'><p>{{creator.name}} </p></span>
 	</div>
 
-		{% endfor %}
+	</div>
+
 
 
 {% endblock %}

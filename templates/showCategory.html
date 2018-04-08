@@ -33,6 +33,8 @@
 		{% for i in items %}
 
     <div class = 'nameAndPrice'>
+
+    	<a href = "{{url_for('showCategoryItemByName', categories_name = i.categories.name, categoriesItems_name = i.name)}}">
 		<span class = 'name'><p>{{i.name}}</p></span>
 
 		<span class = 'description'><p>{{i.description}} </p>
