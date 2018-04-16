@@ -18,10 +18,14 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-# Create dummy user
+# Create dummy user & my username
 User1 = User(name="Robo Cataloger", email="Robby@cataloger.com",
              picture='https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png')
 session.add(User1)
+session.commit()
+
+User2 = User(name="Chris Baines", email="cbaines78@gmail.com")
+session.add(User2)
 session.commit()
 
 #A Sporting Goods Category
@@ -51,27 +55,27 @@ session.commit()
 
 
 #A Books category
-categories2 = Categories(user_id=1, name = "Books")
+categories2 = Categories(user_id=2, name = "Books")
 session.add(categories2)
 session.commit()
 
-categoriesItem1 = CategoryItems(user_id=1, name = "Grapes of Wrath", description = "Nothing to do with fruit", categories = categories2)
+categoriesItem1 = CategoryItems(user_id=2, name = "Grapes of Wrath", description = "Nothing to do with fruit", categories = categories2)
 session.add(categoriesItem1)
 session.commit()
 
-categoriesItem2 = CategoryItems(user_id=1, name = "Cooking for Dummies", description = "Try not to burn things", categories = categories2)
+categoriesItem2 = CategoryItems(user_id=2, name = "Cooking for Dummies", description = "Try not to burn things", categories = categories2)
 session.add(categoriesItem2)
 session.commit()
 
-categoriesItem3 = CategoryItems(user_id=1, name = "A Brief History of Time", description = "Prevent Insomnia", categories = categories2)
+categoriesItem3 = CategoryItems(user_id=2, name = "A Brief History of Time", description = "Prevent Insomnia", categories = categories2)
 session.add(categoriesItem3)
 session.commit()
 
-categoriesItem4 = CategoryItems(user_id=1, name = "Tesla: Part Deux", description = "A Biography of Elon Musk", categories = categories2)
+categoriesItem4 = CategoryItems(user_id=2, name = "Tesla: Part Deux", description = "A Biography of Elon Musk", categories = categories2)
 session.add(categoriesItem4)
 session.commit()
 
-categoriesItem5 = CategoryItems(user_id=1, name = "Drinking Around the World", description = "All the things to drink in Epcot", categories = categories2)
+categoriesItem5 = CategoryItems(user_id=2, name = "Drinking Around the World", description = "All the things to drink in Epcot", categories = categories2)
 session.add(categoriesItem5)
 session.commit()
 
@@ -99,7 +103,6 @@ session.commit()
 categoriesItem5 = CategoryItems(user_id=1, name = "Tomb Raider", description = "Think: What is the limit of Remaking Something?", categories = categories3)
 session.add(categoriesItem5)
 session.commit()
-
 
 print "added catalog items!"
 
