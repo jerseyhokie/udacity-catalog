@@ -2,7 +2,7 @@
 {% block content %}
 {% include "header.html" %}
 
-<h1>Catalog App</h1>
+<h1>Catalog</h1>
 
 <div class = 'flash'>
 		      {% with messages = get_flashed_messages() %}
@@ -18,41 +18,30 @@
 
 </div>
 
-	<a href = '{{url_for('newCategory') }}'>Create New Category Item</a>
+<div class="items">
 
-
+<ol>
 {% for i in categories %}
-	<a href = "{{url_for('showCategoryByName', categories_name = i.name)}}">
-		<div class="row">
-			<div class="col-md-1"></div>
-				<div class="col-md-10 restaurant-list">
-					<h3>{{i.name}}</h3>
-				</div>
-			<div class="col-md-1"></div>
-		</div>
-	</a>
-
-	<div class = "editdeletepane">
-
-	<a href='{{url_for('editCategoryByName', categories_name = i.name )}}'>Edit</a>
-	<a href='{{url_for('deleteCategoryByName', categories_name = i.name )}}'>Delete</a>
-	</div>
+	<li><a href = "{{url_for('showCategoryByName', categories_name = i.name)}}">{{i.name}}</a></li>
+	<p><i><a href='{{url_for('editCategoryByName', categories_name = i.name )}}'>Edit</a>
+	<a href='{{url_for('deleteCategoryByName', categories_name = i.name )}}'>Delete</a></i>
+	</p>
+	<p>
 {% endfor %}
+</ol>
 
-<h2> Recently Added Items </h2>
+<h6><a href = '{{url_for('newCategory') }}'>Create New Catalog Item</a></h6>
 
+<h6> Recently Added Items </h6>
+
+<ol>
 {% for p in recent %}
 
-	<a href = "{{url_for('showCategoryItemByName', categories_name = p.categories.name, categoriesItems_name = p.name)}}">
-			<div class="row">
-			<div class="col-md-1"></div>
-				<div class="col-md-10 restaurant-list">
-					<h3>{{p.name}}</h3>
-				</div>
-			<div class="col-md-1"></div>
-		</div>
-    </a>
+<li><a href = "{{url_for('showCategoryItemByName', categories_name = p.categories.name, categoriesItems_name = p.name)}}">{{p.name}}</a></li>
 
 {% endfor %}
+</ol>
+
+
 
 {% endblock %}

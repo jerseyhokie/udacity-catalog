@@ -4,7 +4,19 @@
 
 <h1>New Category</h1>
 
-<div class = 'pane'>
+<div class = 'flash'>
+	{% with messages = get_flashed_messages() %}
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
 <form action="{{ url_for('newCategory')}}" method = 'post'>
 
 <dl>
@@ -12,10 +24,10 @@
 		<dd><input type ='text' size='30' name='name'></dd>
 </dl>
 
-
 <input type='submit' value='Create'>
+<a href = '{{url_for('showCategories')}}'> Cancel </a>
 
 </form>
-</div>
+
 
 {% endblock %}

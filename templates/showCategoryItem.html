@@ -2,19 +2,8 @@
 {% block content %}
 {% include "header.html" %}
 
-	<body>
-	<div class = 'pane'>
-		<div class = 'header'>
-		<h1>{{ item.name }}</h1>
-		<figure class="creator">
-			<img src={{creator.picture}}>
-			<figcaption>{{creator.name}}</figcaption>
-		</figure>
-	</div>
-
-
 <div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
+              {% with messages = get_flashed_messages() %}
       {% if messages %}
 
         <ul>
@@ -24,26 +13,23 @@
         </ul>
         {% endif %}
     {% endwith %}
-
 </div>
 
+<h1>{{ item.name }}</h1>
 
-    <div class = 'nameAndPrice'>
+<p><b>Description:</b> <i>{{item.description}}</i></p>
+<p><b>Category:</b> <i><a href='{{url_for('showCategoryByName', categories_name = categories_name )}}'>{{categories_name}}</i></a> </p>
 
-		<span class = 'name'><p>{{item.name}}</p></span>
+<p><a href='{{url_for('editCategoryItemByName', categories_name = categories_name, categoriesItems_name=item.name )}}'>Edit</a>
+<a href='{{url_for('deleteCategoryItemByName', categories_name = categories_name, categoriesItems_name=item.name )}}'>Delete</a></p>
 
-		<span class = 'description'><p>{{item.description}} </p></span>
+<br>
 
-		<span class = 'creator'><p>{{creator.name}} </p>
-	</span>
-	</div>
-
-	<div class = "editdeletepane">
-
-	<a href='{{url_for('editCategoryItemByName', categories_name = categories_name, categoriesItems_name=item.name )}}'>Edit</a>
-	<a href='{{url_for('deleteCategoryItemByName', categories_name = categories_name, categoriesItems_name=item.name )}}'>Delete</a>
-	</div>
-
+<h6>Created by:</h6>
+	<figure class="creator">
+		<img src={{creator.picture}}>
+		<figcaption>{{creator.name}}</figcaption>
+	</figure>
 
 
 {% endblock %}

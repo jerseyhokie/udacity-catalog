@@ -2,12 +2,7 @@
 {% block content %}
 {% include "header.html" %}
 
-	<body>
-	<div class = 'pane'>
-		<div class = 'header'>
-		<h1>{{ itemToDelete.name }} will be deleted </h1>
-	</div>
-
+<h1> Delete Category </h1>
 
 <div class = 'flash'>
 		      {% with messages = get_flashed_messages() %}
@@ -23,23 +18,28 @@
 
 </div>
 
-<div class = 'pane'>
-<form action="{{ url_for('deleteCategoryByName', categories_name = itemToDelete.name)}}" method = 'post'>
+<h5>Category: {{ itemToDelete.name }}</h5>
 
-<p>Are you sure you want to delete {{ itemToDelete.name }}? </p>
-
-<p> Which contains the following items:</p>
+<p> This category contains the following items:</p>
 
 {% for i in items %}
-
-    <div class = 'nameAndPrice'>
-		<span class = 'name'><p>{{i.name}}</p></span>
-
-		<span class = 'description'><p>{{i.description}} </p></span>
-	</div>
+<ul>
+	<li>Name: {{i.name}}</li>
+	<li>Description: <i>{{i.description}}</i></li>
+	<p>
+</ul>
 
 {% endfor %}
 
+<div class = 'pane'>
+<form action="{{ url_for('deleteCategoryByName', categories_name = itemToDelete.name)}}" method = 'post'>
+
+<p>Are you sure you want to delete <b>{{ itemToDelete.name }}</b>? </p>
+
 <input type='submit' value='Delete'>
+
+<a href = '{{url_for('showCategoryByName', categories_name = itemToDelete.name )}}'> Cancel </a>
+
+</form>
 
 {% endblock %}

@@ -1,25 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
 
-  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-  </script>
 
+<h1> Login via these services: </h1>
+
+<br>
+<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="//apis.google.com/js/platform.js?onload=start"> </script>
-
 <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
-
-
 </head>
 
-
 <body>
-
-
 <!-- GOOGLE PLUS SIGN IN-->
-
-
           <div id="signinButton">
           <span class="g-signin"
             data-scope="openid email"
@@ -63,10 +57,9 @@ function signInCallback(authResult) {
 
   }); } }
 </script>
-
-
-
 <!--END GOOGLE PLUS SIGN IN -->
+
+<br>
 
 <!--FACEBOOK SIGN IN -->
 <script>
@@ -119,19 +112,11 @@ function signInCallback(authResult) {
 
 
 <button>
-
-
-          <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+<fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
 <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-
 </fb:login-button>
-
-
-        </button>
+</button>
 <!--END FACEBOOK SIGN IN -->
 
 
-
-  </body>
-
-  </html>
+{% endblock %}

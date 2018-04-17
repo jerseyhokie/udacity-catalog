@@ -2,17 +2,10 @@
 {% block content %}
 {% include "header.html" %}
 
-	<body>
-	<div class = 'pane'>
-		<div class = 'header'>
-		<h1>{{ categories.name }}</h1>
-	</div>
-
-	<a href = '{{url_for('newCategoryItemByName', categories_name = categories.name) }}'>Create New Category Item</a>
-
+<h1>{{ categories.name }}</h1>
 
 <div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
+              {% with messages = get_flashed_messages() %}
       {% if messages %}
 
         <ul>
@@ -25,18 +18,23 @@
 
 </div>
 
+<ol>
 
-		{% for i in items %}
+    {% for i in items %}
+<li><p><a href = "{{url_for('showCategoryItemByName', categories_name = i.categories.name, categoriesItems_name = i.name)}}">{{i.name}}</a></p></li>
+    {% endfor %}
 
-	<a href = "{{url_for('showCategoryItemByName', categories_name = i.categories.name, categoriesItems_name = i.name)}}">
+</ol>
 
-    <div class = 'nameAndPrice'>
-		<span class = 'name'><p>{{i.name}}</p></span>
+<h6><a href = '{{url_for('newCategoryItemByName', categories_name = categories.name) }}'>Add New Category Item</a>
 
-		<span class = 'description'><p>{{i.description}} </p></span>
-	</div>
+<br>
 
-		{% endfor %}
+<h6>Category Created by:</h6>
+    <figure class="creator">
+        <img src={{creator.picture}}>
+        <figcaption>{{creator.name}}</figcaption>
+    </figure>
 
 
 {% endblock %}
