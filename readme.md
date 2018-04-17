@@ -53,6 +53,8 @@ Name:
 Category: http://localhost:5000/catalog/<category name>/JSON
 Catalog Item: http://localhost:5000/catalog/<category name>/<category item>/JSON
 
+## Code
+This project was possible because of the Udacity Forums and Stack Overflow, without which I would have been lost!
 
 ### License
 MIT License
