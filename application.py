@@ -323,8 +323,8 @@ def showCategoryJSON(categories_id):
         id=categories_id).one()
     itemsToShow = session.query(CategoryItems).filter_by(
         categories_id=categoryToShow.id)
-    return jsonify(Category=
-                   [categoryItems.serialize for categoryItems in itemsToShow])
+    return jsonify(Category=[categoryItems.serialize for
+                             categoryItems in itemsToShow])
 
 
 @app.route('/catalog/<string:categories_name>/JSON')
@@ -333,8 +333,8 @@ def showCategoryByNameJSON(categories_name):
         name=categories_name).one()
     itemsToShow = session.query(CategoryItems).filter_by(
         categories_id=categoryToShow.id)
-    return jsonify(Category=
-                   [categoryItems.serialize for categoryItems in itemsToShow])
+    return jsonify(Category=[categoryItems.serialize for
+                             categoryItems in itemsToShow])
 
 
 @app.route('/catalog/<int:categories_id>/<int:categoriesItems_id>/JSON')
@@ -402,9 +402,8 @@ def editCategory(categories_id):
         return redirect('/login')
     editedItem = session.query(Categories).filter_by(id=categories_id).one()
     if editedItem.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Edit is only available to the owner of the item!")
+        return redirect(url_for('showCategories'))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -428,9 +427,8 @@ def editCategoryByName(categories_name):
     editedItem = session.query(Categories).filter_by(
         name=categories_name).one()
     if editedItem.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Edit is only available to the owner of the item!")
+        return redirect(url_for('showCategories'))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -455,9 +453,8 @@ def deleteCategory(categories_id):
     itemsToDelete = session.query(CategoryItems).filter_by(
         categories_id=categories_id)
     if categoryToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Delete is only available to the owner of the item!")
+        return redirect(url_for('showCategories'))
     if request.method == 'POST':
 
         # Insert code to delete items from CategoryItems with categories_id
@@ -485,9 +482,8 @@ def deleteCategoryByName(categories_name):
     itemsToDelete = session.query(CategoryItems).filter_by(
         categories_id=categoryToDelete.id)
     if categoryToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Delete is only available to the owner of the item!")
+        return redirect(url_for('showCategories'))
     if request.method == 'POST':
 
         # Code to delete items from CategoryItems with categories_id
@@ -560,7 +556,7 @@ def showCategory(categories_id):
     items = session.query(CategoryItems).filter_by(
         categories_id=categories_id)
     if ('username' not in login_session or
-        creator.id != login_session['user_id']):
+            creator.id != login_session['user_id']):
         return render_template('showPublicCategory.html',
                                categories=categories,
                                items=items,
@@ -568,10 +564,10 @@ def showCategory(categories_id):
                                creator=creator)
     else:
         return render_template('showCategory.html',
-                           categories=categories,
-                           items=items,
-                           categories_id=categories_id,
-                           creator=creator)
+                               categories=categories,
+                               items=items,
+                               categories_id=categories_id,
+                               creator=creator)
 
 
 @app.route('/catalog/<string:categories_name>/')
@@ -582,7 +578,7 @@ def showCategoryByName(categories_name):
     items = session.query(CategoryItems).filter_by(
         categories_id=categories.id)
     if ('username' not in login_session or
-        creator.id != login_session['user_id']):
+            creator.id != login_session['user_id']):
         return render_template('showPublicCategory.html',
                                categories=categories,
                                items=items,
@@ -590,10 +586,10 @@ def showCategoryByName(categories_name):
                                creator=creator)
     else:
         return render_template('showCategory.html',
-                           categories=categories,
-                           items=items,
-                           categories_name=categories_name,
-                           creator=creator)
+                               categories=categories,
+                               items=items,
+                               categories_name=categories_name,
+                               creator=creator)
 
 
 # READ - Display all details of a Category Item
@@ -603,7 +599,7 @@ def showCategoryItem(categories_id, categoriesItems_id):
     item = session.query(CategoryItems).filter_by(id=categoriesItems_id).one()
     creator = getUserInfo(item.user_id)
     if ('username' not in login_session or
-        creator.id != login_session['user_id']):
+            creator.id != login_session['user_id']):
         return render_template('showPublicCategoryItem.html',
                                item=item,
                                categories_id=categories_id,
@@ -611,10 +607,10 @@ def showCategoryItem(categories_id, categoriesItems_id):
                                creator=creator)
     else:
         return render_template('showCategoryItem.html',
-                           item=item,
-                           categories_id=categories_id,
-                           categoriesItems_id=categoriesItems_id,
-                           creator=creator)
+                               item=item,
+                               categories_id=categories_id,
+                               categoriesItems_id=categoriesItems_id,
+                               creator=creator)
 
 
 @app.route('/catalog/<string:categories_name>/<string:categoriesItems_name>/')
@@ -623,7 +619,7 @@ def showCategoryItemByName(categories_name, categoriesItems_name):
         name=categoriesItems_name).one()
     creator = getUserInfo(item.user_id)
     if ('username' not in login_session or
-        creator.id != login_session['user_id']):
+            creator.id != login_session['user_id']):
         return render_template('showPublicCategoryItem.html',
                                item=item,
                                categories_name=categories_name,
@@ -631,10 +627,10 @@ def showCategoryItemByName(categories_name, categoriesItems_name):
                                creator=creator)
     else:
         return render_template('showCategoryItem.html',
-                           item=item,
-                           categories_name=categories_name,
-                           categoriesItems_name=categoriesItems_name,
-                           creator=creator)
+                               item=item,
+                               categories_name=categories_name,
+                               categoriesItems_name=categoriesItems_name,
+                               creator=creator)
 
 
 # UPDATE - Edit a category Item
@@ -647,9 +643,9 @@ def editCategoryItem(categories_id, categoriesItems_id):
     editedItem = session.query(CategoryItems).filter_by(
         id=categoriesItems_id).one()
     if editedItem.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Edit is only available to the owner of the item!")
+        return redirect(url_for('showCategory',
+                                categories_id=categories_id))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -676,9 +672,9 @@ def editCategoryItemByName(categories_name, categoriesItems_name):
     editedItem = session.query(CategoryItems).filter_by(
         name=categoriesItems_name).one()
     if editedItem.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Edit is only available to the owner of the item!")
+        return redirect(url_for('showCategoryByName',
+                                categories_name=categories_name))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -706,9 +702,9 @@ def deleteCategoryItem(categories_id, categoriesItems_id):
     itemToDelete = session.query(CategoryItems).filter_by(
         id=categoriesItems_id).one()
     if itemToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Delete is only available to the owner of the item")
+        return redirect(url_for('showCategory',
+                                categories_id=categories_id))
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
@@ -734,9 +730,9 @@ def deleteCategoryItemByName(categories_name, categoriesItems_name):
     itemToDelete = session.query(CategoryItems).filter_by(
         id=categoriesItems_id).one()
     if itemToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized \
-                to edit this Category. Please create your own category in \
-                order to edit.');}</script><body onload='myFunction()''>"
+        flash("Delete is only available to the owner of the item")
+        return redirect(url_for('showCategoryByName',
+                                categories_name=categories_name))
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
